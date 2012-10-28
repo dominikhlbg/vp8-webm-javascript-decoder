@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>VP8 - WebM JavaScript Decoder for every browser</title>
+<style>
+/* MetaWebPro font family licensed from fontshop.com. WOFF-FTW! */
+@font-face {
+	font-family: 'MetaBlack';
+	src: url('http://mozcom-cdn.mozilla.net/img/fonts/MetaWebPro-Black.eot');
+	src: local('☺'),
+		url('http://mozcom-cdn.mozilla.net/img/fonts/MetaWebPro-Black.woff')
+		format('woff');
+	font-weight: bold;
+}
+</style>
+<style type="text/css">
+body {font:bold 18px/28px MetaBlack, Arial,sans-serif;color:#6D7581;}
+h2 {font:bold 24px/28px MetaBlack, Arial,sans-serif;color:#6D7581;}
+input {font: normal 14px "Arial", sans-serif;padding: 1px;color: #6D7581;}
+</style>
+<script type="text/javascript" src="js/ajax.js"></script>
+<script type="text/javascript" src="js/script.js"></script>
+<script type="text/javascript" src="dixie.js"></script>
+<script type="text/javascript">
+	
+	function webmfile(filename) {
+		isActive=true;
+		disabledbuttons();
+		readfile(webmdata,filename);
+	}
+
+	function vpximg2canvas(img) {
+		var canvas = document.getElementById("vpximage"),
+		context = canvas.getContext("2d");
+		
+		yuvheight	= img.h;
+		yuvwidth	= img.w;
+		height		= img.d_h;
+		width		= img.d_w;
+		
+		//Draw YUV
+		canvas.height=height;
+		canvas.width=width;
+
+		var output = context.createImageData(canvas.width, canvas.height);
+		var outputData = output.data;
+		var R, G, B;
+		var pos;
+		
+		for (var h=0;h<height;h++) {			
+			for (var w=0;w<width;w++) {
+				Y = img.planes[0][img.planes_off[0]+ 0+w+(yuvwidth)*h];
+				U = img.planes[1][img.planes_off[1]+ 0+(w>>1)+(yuvwidth>>1)*(h>>1)];
+				V = img.planes[2][img.planes_off[2]+ 0+(w>>1)+(yuvwidth>>1)*(h>>1)];
+				//alert(Y+' '+U+' '+V+' ');
+				R =  Math.round(Y + 1.371*(V - 128));
+				G =  Math.round(Y - 0.698*(V - 128) - 0.336*(U - 128));
+				B =  Math.round(Y + 1.732*(U - 128));
+
+				outputData[0+w*4+(width*4)*h] = R;
+				outputData[1+w*4+(width*4)*h] = G;
+				outputData[2+w*4+(width*4)*h] = B;
+				outputData[3+w*4+(width*4)*h] = 255;
+			};			
+		}
+		
+		context.putImageData(output, 0, 0);
+
+	}</script>
+
+</head>
+
+<body style="font:Arial, Helvetica, sans-serif">
+<h3>VP8 - WebM JavaScript Decoder for every browser</h3>
+<p>Example Files:</p>
+<p>
+  <input type="button" value="webm/sync_def_PF-0_AF-33-BG_FF-33.webm" onclick="webmfile(this.value)" />
+  <input type="button" value="webm/The_Google_Story.webm" onclick="webmfile(this.value)" />
+</p>
+<canvas id="vpximage" style="border:1px solid black"></canvas>
+<div style="font-size:18px">Frame: <div id="frame"></div></div>
+<div style="font-size:18px">Render: <div id="render"></div></div>
+<br />
+<br />
+<br />
+VP8 - WebM JavaScript Decoder for every browser - This script work with Internet Explorer 9, Safari 4/5, Google Chrome, Mozilla Firefox, Opera, IPhone/IPad (iOS) & Android - implemented by <a href="http://webpjs.appspot.com">Dominik Homberger</a>
+</body>
+</html>
