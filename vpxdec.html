@@ -30,8 +30,16 @@ input {font: normal 14px "Arial", sans-serif;padding: 1px;color: #6D7581;}
 		readfile(webmdata,filename);
 	}
 
+	var canvas, context;
+	var output;
+	var outputData;
+	var R, G, B;
+	var pos, outputData_pos;
+	var firsttime=true;
+	
 	function vpximg2canvas(img) {
-		var canvas = document.getElementById("vpximage"),
+		if (firsttime) {
+		canvas = document.getElementById("vpximage"),
 		context = canvas.getContext("2d");
 		
 		yuvheight	= img.h;
@@ -43,10 +51,10 @@ input {font: normal 14px "Arial", sans-serif;padding: 1px;color: #6D7581;}
 		canvas.height=height;
 		canvas.width=width;
 
-		var output = context.createImageData(canvas.width, canvas.height);
-		var outputData = output.data;
-		var R, G, B;
-		var pos;
+		output = context.createImageData(canvas.width, canvas.height);
+		outputData = output.data;
+		firsttime=false;
+		}
 		
 		for (var h=0;h<height;h++) {			
 			for (var w=0;w<width;w++) {
@@ -54,14 +62,15 @@ input {font: normal 14px "Arial", sans-serif;padding: 1px;color: #6D7581;}
 				U = img.planes[1][img.planes_off[1]+ 0+(w>>1)+(yuvwidth>>1)*(h>>1)];
 				V = img.planes[2][img.planes_off[2]+ 0+(w>>1)+(yuvwidth>>1)*(h>>1)];
 				//alert(Y+' '+U+' '+V+' ');
-				R =  Math.round(Y + 1.371*(V - 128));
-				G =  Math.round(Y - 0.698*(V - 128) - 0.336*(U - 128));
-				B =  Math.round(Y + 1.732*(U - 128));
+				R =  (0.5 + (Y + 1.371*(V - 128))) | 0;
+				G =  (0.5 + (Y - 0.698*(V - 128) - 0.336*(U - 128))) | 0;
+				B =  (0.5 + (Y + 1.732*(U - 128))) | 0;
 
-				outputData[0+w*4+(width*4)*h] = R;
-				outputData[1+w*4+(width*4)*h] = G;
-				outputData[2+w*4+(width*4)*h] = B;
-				outputData[3+w*4+(width*4)*h] = 255;
+				outputData_pos = w*4+(width*4)*h;
+				outputData[0+outputData_pos] = R;
+				outputData[1+outputData_pos] = G;
+				outputData[2+outputData_pos] = B;
+				outputData[3+outputData_pos] = 255;
 			};			
 		}
 		

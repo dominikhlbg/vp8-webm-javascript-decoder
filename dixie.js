@@ -2672,7 +2672,7 @@ var ref_cnt_img = function()
 
 var vp8_decoder_ctx = function()
 {
-    this.error='',//todo: newObjectI(vpx_internal_error_info),
+    this.error=[],//todo: newObjectI(vpx_internal_error_info),
     this.frame_cnt=int_,
 
     this.frame_hdr=			new vp8_frame_hdr(),
