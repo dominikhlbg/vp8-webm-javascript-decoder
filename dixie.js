@@ -2580,7 +2580,7 @@ var Arr_1056=Arr(1056,0);
 var vp8_entropy_hdr = function()
 {
     this.coeff_probs=new coeff_probs_table_t(),
-    this.coeff_probs_=Arr_1056,//Arr(1056,0),
+    this.coeff_probs_=Arr(1056,0),//Arr_1056,
     this.mv_probs=Arr_new(2,mv_component_probs_t),
     this.coeff_skip_enabled=int_,
     this.coeff_skip_prob=char_,
