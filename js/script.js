@@ -38,6 +38,7 @@ function disabledbuttons() {
 var canvas, context;
 
 window.onload = function(){
+	isActive=false;
 	var buttons = document.getElementsByTagName('input');
 	for(var i=0;i<buttons.length;i++)
 	buttons[i].disabled=false;
