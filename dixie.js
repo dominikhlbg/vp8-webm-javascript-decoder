@@ -2842,10 +2842,10 @@ vp8_dixie_idct_add(recon,
         temp2 = (coeffs[coeffs_off+ 3] * sinpi8sqrt2/* + rounding */) >> 16;
         d1 = temp1 + temp2;
 
-        recon[recon_off+ 0] = CLAMP_255(predict[predict_off+ 0] + ((a1 + d1 + 4) >> 3));
-        recon[recon_off+ 3] = CLAMP_255(predict[predict_off+ 3] + ((a1 - d1 + 4) >> 3));
-        recon[recon_off+ 1] = CLAMP_255(predict[predict_off+ 1] + ((b1 + c1 + 4) >> 3));
-        recon[recon_off+ 2] = CLAMP_255(predict[predict_off+ 2] + ((b1 - c1 + 4) >> 3));
+        recon[recon_off+ 0] = (predict[predict_off+ 0] + ((a1 + d1 + 4) >> 3));//CLAMP_255
+        recon[recon_off+ 3] = (predict[predict_off+ 3] + ((a1 - d1 + 4) >> 3));//CLAMP_255
+        recon[recon_off+ 1] = (predict[predict_off+ 1] + ((b1 + c1 + 4) >> 3));//CLAMP_255
+        recon[recon_off+ 2] = (predict[predict_off+ 2] + ((b1 - c1 + 4) >> 3));//CLAMP_255
 
         coeffs_off += 4;
         recon_off += stride;
@@ -5995,7 +5995,7 @@ sixtap_horiz(output,
                    (reference[reference_off+ 3] * filter[5]) +
                    64;
             temp >>= 7;
-            output[output_off+ c] = CLAMP_255(temp);
+            output[output_off+ c] = (temp);//CLAMP_255
             reference_off++;
         }
 
@@ -6032,7 +6032,7 @@ sixtap_vert(output,
                    (reference[reference_off+ 3*reference_stride] * filter[5]) +
                    64;
             temp >>= 7;
-            output[output_off+ c] = CLAMP_255(temp);
+            output[output_off+ c] = (temp);//CLAMP_255
             reference_off++;
         }
 
