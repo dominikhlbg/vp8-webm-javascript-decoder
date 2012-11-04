@@ -2770,7 +2770,7 @@ vp8_dixie_walsh(input, input_off, output, output_off)
 
 var cospi8sqrt2minus1 = 20091;
 var sinpi8sqrt2       = 35468;
-var rounding          = 0;
+/*var rounding          = 0;*/
 //67
 function
 idct_columns(input, input_off, output, output_off)
@@ -2788,14 +2788,14 @@ idct_columns(input, input_off, output, output_off)
         a1 = ip[ip_off+ 0] + ip[ip_off+ 8];
         b1 = ip[ip_off+ 0] - ip[ip_off+ 8];
 
-        temp1 = (ip[ip_off+ 4] * sinpi8sqrt2 + rounding) >> 16;
+        temp1 = (ip[ip_off+ 4] * sinpi8sqrt2/* + rounding */) >> 16;
         temp2 = ip[ip_off+ 12] +
-            ((ip[ip_off+ 12] * cospi8sqrt2minus1 + rounding) >> 16);
+            ((ip[ip_off+ 12] * cospi8sqrt2minus1/* + rounding */) >> 16);
         c1 = temp1 - temp2;
 
         temp1 = ip[ip_off+ 4] +
-            ((ip[ip_off+ 4] * cospi8sqrt2minus1 + rounding) >> 16);
-        temp2 = (ip[ip_off+ 12] * sinpi8sqrt2 + rounding) >> 16;
+            ((ip[ip_off+ 4] * cospi8sqrt2minus1/* + rounding */) >> 16);
+        temp2 = (ip[ip_off+ 12] * sinpi8sqrt2/* + rounding */) >> 16;
         d1 = temp1 + temp2;
 
         op[op_off+ shortpitch*0] = a1 + d1;
@@ -2832,14 +2832,14 @@ vp8_dixie_idct_add(recon,
         a1 = coeffs[coeffs_off+ 0] + coeffs[coeffs_off+ 2];
         b1 = coeffs[coeffs_off+ 0] - coeffs[coeffs_off+ 2];
 
-        temp1 = (coeffs[coeffs_off+ 1] * sinpi8sqrt2 + rounding) >> 16;
+        temp1 = (coeffs[coeffs_off+ 1] * sinpi8sqrt2/* + rounding */) >> 16;
         temp2 = coeffs[coeffs_off+ 3] +
-            ((coeffs[coeffs_off+ 3] * cospi8sqrt2minus1 + rounding) >> 16);
+            ((coeffs[coeffs_off+ 3] * cospi8sqrt2minus1/* + rounding */) >> 16);
         c1 = temp1 - temp2;
 
         temp1 = coeffs[coeffs_off+ 1] +
-            ((coeffs[coeffs_off+ 1] * cospi8sqrt2minus1 + rounding) >> 16);
-        temp2 = (coeffs[coeffs_off+ 3] * sinpi8sqrt2 + rounding) >> 16;
+            ((coeffs[coeffs_off+ 1] * cospi8sqrt2minus1/* + rounding */) >> 16);
+        temp2 = (coeffs[coeffs_off+ 3] * sinpi8sqrt2/* + rounding */) >> 16;
         d1 = temp1 + temp2;
 
         recon[recon_off+ 0] = CLAMP_255(predict[predict_off+ 0] + ((a1 + d1 + 4) >> 3));
