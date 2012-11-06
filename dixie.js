@@ -7857,6 +7857,8 @@ function main(AJAX_response, argc, argv_)
 //
 //    if (!quiet)
 //        fprintf(stderr, "%s\n", decoder.name);
+	var getElementById_render = document.getElementById('render');
+	var getElementById_frame = document.getElementById('frame');
 	var startdatum = new Date();var ii=0;var isframe;var decoder2 = new vp8_decoder_ctx();
     /* Decode file */
 	function readframe() {
@@ -7906,11 +7908,11 @@ function main(AJAX_response, argc, argv_)
 //////		
 		enddatum =new Date();
 		if(img_avail) {
-		document.getElementById('render').innerHTML=(enddatum-startdatum)+'ms<br />FPS:'+(1000/(enddatum-startdatum)).toFixed(2);
+		getElementById_render.innerHTML=(enddatum-startdatum)+'ms<br />FPS:'+(1000/(enddatum-startdatum)).toFixed(2);
 		if (img)
 		vpximg2canvas(img);
 		ii++;
-		document.getElementById('frame').innerHTML=ii;
+		getElementById_frame.innerHTML=ii;
 		}
 		readframe();
     },0);
