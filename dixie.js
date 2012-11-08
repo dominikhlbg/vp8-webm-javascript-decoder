@@ -148,9 +148,9 @@ function offsetof(val1,val2) {
 	return val2;
 }
 
-function sizeof(val) {
-	return 1;
-}
+//function sizeof(val) {
+//	return 1;
+//}
 
 //function intBitLeft(uint_t, lefts) {
 //	//same as (int64)uint64_t<<lefts
@@ -750,7 +750,7 @@ function E_FIELD(ID, _ID, TYPE, STRUCT, FIELD) {
   return new Array( ID, _ID, TYPE, FIELD/*offsetof(STRUCT, FIELD)*/, DESC_FLAG_NONE, null, 0, 0 ) }
 function E_MASTER(ID, _ID, TYPE, STRUCT, FIELD, NE_FIELD_ELEMENTS) {
   return new Array( ID, _ID, TYPE, FIELD/*offsetof(STRUCT, FIELD)*/, DESC_FLAG_MULTI, NE_FIELD_ELEMENTS,
-      sizeof(FIELD), 0 ) }
+      1/*sizeof(FIELD)*/, 0 ) }
 function E_SINGLE_MASTER_O(ID, _ID, TYPE, STRUCT, FIELD, NE_FIELD_ELEMENTS) {
   return new Array( ID, _ID, TYPE, FIELD/*offsetof(STRUCT, FIELD)*/, DESC_FLAG_OFFSET, NE_FIELD_ELEMENTS, 0,
       FIELD+'_offset'/*offsetof(STRUCT, FIELD+'_offset')*/ ) }
@@ -914,7 +914,7 @@ ne_io_read_skip(io, length)
   var r = 1;
 
   while (length > 0) {
-    get_ = length < sizeof(buf)*buf.val.length ? length : sizeof(buf)*buf.val.length;
+    get_ = length < /*sizeof(buf)**/buf.val.length ? length : /*sizeof(buf)**/buf.val.length;
     r = ne_io_read(io, buf, get_);
     if (r != 1)
       break;
@@ -1042,7 +1042,7 @@ ne_read_int(io, val, length)
   if (r != 1)
     return r;
 
-  if (length < sizeof(int64_t)*8) {
+  if (length < /*sizeof(int64_t)**/8) {
     base = 1;
     base <<= length * 8 - 1;
     if (uval >= base) {
@@ -4552,7 +4552,7 @@ goto_ = END;
 function
 reset_row_context(left)
 {
-    memset(left, 0, 0, left.length*sizeof(left));
+    memset(left, 0, 0, left.length/**sizeof(left)*/);
 }
 
 
@@ -4575,8 +4575,8 @@ reset_mb_context(left,
      * preserve the context of the second order block if this mode
      * would not have updated it.
      */
-    memset(left, 0, 0, sizeof((left)[0]) * 8);
-    memset(above, 0, 0, sizeof((above)[0]) * 8);
+    memset(left, 0, 0,/* sizeof((left)[0]) **/ 8);
+    memset(above, 0, 0,/* sizeof((above)[0]) **/ 8);
 
     if (mode != B_PRED && mode != SPLITMV)
     {
@@ -4648,7 +4648,7 @@ vp8_dixie_tokens_init(ctx)
     {
         var i=int_;
         var coeff_row_sz =
-            ctx.mb_cols * 25 * 16 * sizeof(short_);
+            ctx.mb_cols * 25 * 16/* * sizeof(short_)*/;
 
         for (i = 0; i < partitions; i++)
         {
@@ -6927,7 +6927,7 @@ decode_loopfilter_header(ctx,
                          hdr)
 {
     if (ctx.frame_hdr.is_keyframe)
-        memset(hdr, 0, sizeof(hdr));//todo
+        memset(hdr, 0, 1/*sizeof(hdr)*/);//todo
 
     hdr.use_simple    = bool_get_bit(bool);
     hdr.level         = bool_get_uint(bool, 6);
@@ -6954,7 +6954,7 @@ decode_segmentation_header(ctx,
                            hdr)
 {
     if (ctx.frame_hdr.is_keyframe)
-        memset(hdr, 0, sizeof(hdr));//todo:
+        memset(hdr, 0, 1/*sizeof(hdr)*/);//todo:
 
     hdr.enabled = bool_get_bit(bool);
 
@@ -7418,7 +7418,7 @@ function vp8_init(ctx)
         if (!ctx.priv)
             return VPX_CODEC_MEM_ERROR;
 
-        ctx.priv.sz = sizeof(vpx_codec_alg_priv_t);
+        ctx.priv.sz = 1/*sizeof(vpx_codec_alg_priv_t)*/;
         ctx.priv.iface = ctx.iface;
         ctx.priv.alg_priv = priv;
         ctx.priv.init_flags = ctx.init_flags;
@@ -7478,10 +7478,10 @@ function vp8_get_si(ctx,
 
     var sz=int_;
 
-    if (si.sz >= sizeof(vp8_stream_info_t))
-        sz = sizeof(vp8_stream_info_t);
+    if (si.sz >= 1/*sizeof(vp8_stream_info_t)*/)
+        sz = 1/*sizeof(vp8_stream_info_t)*/;
     else
-        sz = sizeof(vpx_codec_stream_info_t);
+        sz = 1/*sizeof(vpx_codec_stream_info_t)*/;
 
     memcpy(si, ctx.si, sz);alert('todo');
     si.sz = sz;
@@ -7589,8 +7589,8 @@ var //enum file_kind 202
 //}
 ;
 
-var IVF_FRAME_HDR_SZ = (sizeof(uint32_t)*4 + sizeof(uint64_t)*8);
-var RAW_FRAME_HDR_SZ = (sizeof(uint32_t)*4);
+var IVF_FRAME_HDR_SZ = (/*sizeof(uint32_t)**/4 + /*sizeof(uint64_t)**/8);
+var RAW_FRAME_HDR_SZ = (/*sizeof(uint32_t)**/4);
 function read_frame(input,
                       	buf,
                       	buf_off,
