@@ -2450,10 +2450,14 @@ function bool_maybe_get_int(br, bits)
 function
 bool_read_tree(bool,
                t,
-               p)
+               p,
+               p_off)
 {
     var i = 0;
 
+	if(typeof p_off!=='undefined')
+    while ((i = t[ i + bool_get(bool, p[p_off +(i>>1)])]) > 0) ;
+	else
     while ((i = t[ i + bool_get(bool, p[i>>1])]) > 0) ;
 
     return -i;
@@ -3690,7 +3694,7 @@ read_mv_component(bool,
             x += 8;
     }
     else   /* small */
-        x = bool_read_tree(bool, small_mv_tree, mvc.slice( + SHORT));//todo
+        x = bool_read_tree(bool, small_mv_tree, mvc, + SHORT);//todo
 
     if (x && bool_get(bool, mvc[SIGN]))
         x = -x;
