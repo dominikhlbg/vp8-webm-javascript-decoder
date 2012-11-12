@@ -1421,7 +1421,7 @@ ne_parse(ctx, top_level)
 }
 
 function //1067
-ne_read_xiph_lace_value(io, value, consumed)
+ne_read_xiph_lace_value(io, value, value_off, consumed)
 {
   var r=int_;
   var lace=[uint64_t];
@@ -1431,13 +1431,13 @@ ne_read_xiph_lace_value(io, value, consumed)
     return r;
   consumed[0] += 1;
 
-  value[0] = lace;
-  while (lace == 255) {
+  value[value_off+ 0] = lace[0];
+  while (lace[0] == 255) {
     r = ne_read_uint(io, lace, 1);
     if (r != 1)
       return r;
     consumed[0] += 1;
-    value[0] += lace;
+    value[value_off+ 0] += lace[0];
   }
 
   return 1;
@@ -1451,7 +1451,7 @@ ne_read_xiph_lacing(io, block, read, n, sizes)
   var sum = 0;
 
   while (--n) {
-    r = ne_read_xiph_lace_value(io, sizes[i], read);
+    r = ne_read_xiph_lace_value(io, sizes, i, read);
     if (r != 1)
       return r;
     sum += sizes[i];
@@ -1471,15 +1471,15 @@ ne_read_ebml_lacing(io, block, read, n, sizes)
 {
   var r=int_;
   var lace=[uint64_t], sum=uint64_t, length=[uint64_t];
-  var slace=int64_t;
+  var slace=[int64_t];
   var i = 0;
 
   r = ne_read_vint(io, lace, length);
   if (r != 1)
     return r;
-  read[0] += length;
+  read[0] += length[0];
 
-  sizes[i] = lace;
+  sizes[i] = lace[0];
   sum = sizes[i];
 
   i += 1;
@@ -1489,8 +1489,8 @@ ne_read_ebml_lacing(io, block, read, n, sizes)
     r = ne_read_svint(io, slace, length);
     if (r != 1)
       return r;
-    read[0] += length;
-    sizes[i] = sizes[i - 1] + slace;
+    read[0] += length[0];
+    sizes[i] = sizes[i - 1] + slace[0];
     sum += sizes[i];
     i += 1;
   }
@@ -1509,9 +1509,9 @@ ne_get_timecode_scale(ctx)
   var scale=[uint64_t];
 
   if (ne_get_uint(ctx.segment.info.timecode_scale, scale) != 0)
-    scale = 1000000;
+    scale[0] = 1000000;
 
-  return scale;
+  return scale[0];
 }
 
 function //1161
@@ -1577,7 +1577,7 @@ ne_read_block(ctx, block_id, block_size, data)//nestegg_packet ** data
 
   /* flags are different between block and simpleblock, but lacing is
      encoded the same way */
-  lacing = (flags & BLOCK_FLAGS_LACING) >> 1;
+  lacing = (flags[0] & BLOCK_FLAGS_LACING) >> 1;
 
   switch (lacing) {
   case LACING_NONE:
@@ -1608,13 +1608,13 @@ ne_read_block(ctx, block_id, block_size, data)//nestegg_packet ** data
       return r;
     break;
   case LACING_FIXED:
-    if ((block_size - consumed) % frames)
+    if ((block_size - consumed[0]) % frames[0])
       return -1;
-    for (i = 0; i < frames; ++i)
-      frame_sizes[i] = (block_size - consumed) / frames;//todo: parseInt add
+    for (i = 0; i < frames[0]; ++i)
+      frame_sizes[i] = ((block_size - consumed[0]) / frames)>>0;//todo: parseInt add
     break;
   case LACING_EBML:
-    if (frames == 1)
+    if (frames[0] == 1)
       return -1;
     r = ne_read_ebml_lacing(ctx.io, block_size, consumed, frames, frame_sizes);
     if (r != 1)
@@ -1624,7 +1624,7 @@ ne_read_block(ctx, block_id, block_size, data)//nestegg_packet ** data
 
   /* sanity check unlaced frame sizes against total block size. */
   total = consumed[0];
-  for (i = 0; i < frames; ++i)
+  for (i = 0; i < frames[0]; ++i)
     total += frame_sizes[i];
   if (total > block_size)
     return -1;
@@ -1642,7 +1642,7 @@ ne_read_block(ctx, block_id, block_size, data)//nestegg_packet ** data
   if (ne_get_uint(cluster.timecode, cluster_tc) != 0)
     return -1;
 
-  abs_timecode = timecode + cluster_tc;
+  abs_timecode = timecode[0] + cluster_tc[0];
   if (abs_timecode < 0)
     return -1;
 
@@ -1655,22 +1655,22 @@ ne_read_block(ctx, block_id, block_size, data)//nestegg_packet ** data
 //           block_id == ID_BLOCK ? "" : "simple", pkt.track, pkt.timecode / 1e9, flags, frames);
 
   last = null;
-  for (i = 0; i < frames; ++i) {
+  for (i = 0; i < frames[0]; ++i) {
     if (frame_sizes[i] > LIMIT_FRAME) {
       nestegg_free_packet(pkt);
       return -1;
     }
     //todo: f = ne_alloc(sizeof(*f));
     f=new frame();
-    f.data = /*'reserved space '+*/frame_sizes[i];//frame_sizes[i];//'ne_alloc(frame_sizes[i])';
+    f.data = []/*'reserved space '+*///frame_sizes[i];//frame_sizes[i];//'ne_alloc(frame_sizes[i])';
     f.length = frame_sizes[i];
 	f.data={val:f.data};
     r = ne_io_read(ctx.io, f.data, frame_sizes[i]);f.data=f.data.val;
     if (r != 1) {
       //free(f.data);
-	  f.data='';
+	  f.data=null;
       //free(f);
-	  f='';
+	  f=null;
       nestegg_free_packet(pkt);
       return -1;
     }
@@ -1924,7 +1924,7 @@ nestegg_read_packet(ctx, pkt)
 
       /* the only suspend fields are blocks and simple blocks, which we
          handle directly. */
-      r = ne_read_block(ctx, id, size, pkt);
+      r = ne_read_block(ctx, id, size[0], pkt);
       return r;
     }
 
@@ -7861,6 +7861,7 @@ function main(AJAX_response, argc, argv_)
 //
 //    if (!quiet)
 //        fprintf(stderr, "%s\n", decoder.name);
+	var getElementById_timecode = document.getElementById('timecode');
 	var getElementById_render = document.getElementById('render');
 	var getElementById_frame = document.getElementById('frame');
 	var startdatum = new Date();var ii=0;var isframe;var decoder2 = new vp8_decoder_ctx();
@@ -7873,6 +7874,7 @@ function main(AJAX_response, argc, argv_)
 		startdatum = new Date();
 		
 		vp8_dixie_decode_frame(decoder2, buf, buf_sz);
+        buf=[buf]; // added by d
 		var img_avail = decoder2.frame_hdr.is_shown;
 		var img = decoder2.ref_frames[0].img;
 /////		
@@ -7911,6 +7913,7 @@ function main(AJAX_response, argc, argv_)
 //            ++frame_out;
 //////		
 		enddatum =new Date();
+		getElementById_timecode.innerHTML=input.pkt[0].timecode+' ('+((input.pkt[0].timecode/1000000000)>>0)+' sec)';
 		if(img_avail) {
 		getElementById_render.innerHTML=(enddatum-startdatum)+'ms<br />FPS:'+(1000/(enddatum-startdatum)).toFixed(2);
 		if (img)
