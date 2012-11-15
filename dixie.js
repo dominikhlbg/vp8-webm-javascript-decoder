@@ -4091,10 +4091,10 @@ decode_mvs(ctx,
 
         for (b = 0; b < 4; b++)
         {
-            chroma_mv[b].d.x += 4 + 8 * (chroma_mv[b].d.x >> 31);
-            chroma_mv[b].d.y += 4 + 8 * (chroma_mv[b].d.y >> 31);
-            chroma_mv[b].d.x /= 4;chroma_mv[b].d.x=parseInt(chroma_mv[b].d.x,10);
-            chroma_mv[b].d.y /= 4;chroma_mv[b].d.y=parseInt(chroma_mv[b].d.y,10);
+            chroma_mv[b].d.x += 4/* + 8 * (chroma_mv[b].d.x >> 31)*/;
+            chroma_mv[b].d.y += 4/* + 8 * (chroma_mv[b].d.y >> 31)*/;
+            chroma_mv[b].d.x >>= 2;//chroma_mv[b].d.x=parseInt(chroma_mv[b].d.x,10);
+            chroma_mv[b].d.y >>= 2;//chroma_mv[b].d.y=parseInt(chroma_mv[b].d.y,10);
 
             //note we're passing in non-subsampled coordinates
             if (need_mc_border(chroma_mv[b],
@@ -6331,8 +6331,8 @@ predict_inter_emulated_edge(ctx,
         var uvmv=uvmv_1;
 
         uvmv.d.x = mbi.base.mv.d.x;uvmv.d.y = mbi.base.mv.d.y;
-        uvmv.d.x = parseInt((uvmv.d.x + 1 + (uvmv.d.x >> 31) * 2) / 2,10);
-        uvmv.d.y = parseInt((uvmv.d.y + 1 + (uvmv.d.y >> 31) * 2) / 2,10);
+        uvmv.d.x = (uvmv.d.x + 1/* + (uvmv.d.x >> 31) * 2*/) >> 1;
+        uvmv.d.y = (uvmv.d.y + 1/* + (uvmv.d.y >> 31) * 2*/) >> 1;
 
         if (full_pixel)
         {
@@ -6437,8 +6437,8 @@ predict_inter(ctx,
         var uvmv=uvmv_2;
 
         uvmv.d.x = mbi.base.mv.d.x;uvmv.d.y = mbi.base.mv.d.y;
-        uvmv.d.x = parseInt((uvmv.d.x + 1 + (uvmv.d.x >> 31) * 2) / 2,10);
-        uvmv.d.y = parseInt((uvmv.d.y + 1 + (uvmv.d.y >> 31) * 2) / 2,10);
+        uvmv.d.x = (uvmv.d.x + 1/* + (uvmv.d.x >> 31) * 2*/) >> 1;
+        uvmv.d.y = (uvmv.d.y + 1/* + (uvmv.d.y >> 31) * 2*/) >> 1;
 
         if (full_pixel)
         {
