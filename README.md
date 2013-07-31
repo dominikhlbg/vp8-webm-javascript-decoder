@@ -27,7 +27,7 @@ Currently, there is only the option to `loop` the video.
 
 ```javascript
 var canvas = document.getElementBy('canvas');
-var player = new webm(canvas, { loop:true });
+var player = new webm(canvas, {loop:true});
 player.run(videoData);
 ````
 
