@@ -24,6 +24,10 @@
 "use strict";
 
 
+if (typeof window === 'undefined') {
+  var window = self;
+}
+
 
 /* Definition of the argument values for the exit() function stdlib.h*/
 
@@ -407,7 +411,7 @@ var nestegg_io = function(){
       @retval  0 End of stream.
       @retval -1 Error. */
   //int (* read)(void * buffer, size_t length, void * userdata);
-  this.read=int_,
+  this.read=int_;
 
   /** User supplied seek callback.
       @param offset   Offset within the stream to seek to.
@@ -417,20 +421,20 @@ var nestegg_io = function(){
       @retval  0 Seek succeeded.
       @retval -1 Error. */
   //int (* seek)(int64_t offset, int whence, void * userdata);
-  this.seek=int_,
+  this.seek=int_;
 
   /** User supplied tell callback.
       @param userdata The #userdata supplied by the user.
       @returns Current position within the stream.
       @retval -1 Error. */
   //int64_t (* tell)(void * userdata);
-  this.tell=int64_t,
+  this.tell=int64_t;
 
   /** User supplied pointer to be passed to the IO callbacks. */
   //void * userdata;
 
 
-  this.userdata=void_ //*
+  this.userdata=void_; //*
 } ;
 
 /** Parameters specific to a video track. */
@@ -1933,7 +1937,7 @@ nestegg_read_packet(ctx, pkt)
       return r;
   }
 
-  return 1;
+//  return 1;
 }
 
 function //1873
@@ -2237,7 +2241,7 @@ function vpx_img_set_rect(img,
         if (!(img.fmt & VPX_IMG_FMT_PLANAR))
         {
             img.planes[VPX_PLANE_PACKED] =
-                img.img_data; img.img_data_of + parseInt(x * img.bps / 8 + y * img.stride[VPX_PLANE_PACKED],10);
+                img.img_data; //img.img_data_of + parseInt(x * img.bps / 8 + y * img.stride[VPX_PLANE_PACKED],10);
         }
         else
         {
@@ -2456,9 +2460,9 @@ bool_read_tree(bool,
     var i = 0;
 
 	if(typeof p_off!=='undefined')
-    while ((i = t[ i + bool_get(bool, p[p_off +(i>>1)])]) > 0) ;
+    while ((i = t[ i + bool_get(bool, p[p_off +(i>>1)])]) > 0) {}
 	else
-    while ((i = t[ i + bool_get(bool, p[i>>1])]) > 0) ;
+    while ((i = t[ i + bool_get(bool, p[i>>1])]) > 0) {}
 
     return -i;
 }
@@ -3947,7 +3951,7 @@ decode_split_mv(this_,
         var subblock_mode;//='prediction_mode'
 
         /* Find the first subblock in this partition. */
-        for (k = 0; j != partition[k]; k++);
+        for (k = 0; j != partition[k]; k++){}
 
         /* Decode the next MV */
         left_mv = left_block_mv(this_, left_, k);
