@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>WEBM Example</title>
+<meta name="description" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<link rel="stylesheet" href="assets/css/style.css" type="text/css" media="all">
+</head>
+<body>
+
+<div id="container">
+
+  <h1>WEBM Decoder Example</h1>
+
+  <canvas id="example"></canvas>
+
+  <h3>JS Code:</h3>
+  <pre>// DOM Ready
+jQuery(function($){
+
+  // Get canvas
+  var canvas = $('#example')[0];
+
+  // AJAX Request for video data
+  $.ajax({
+    type: 'GET',
+    mimeType: 'text/plain; charset=x-user-defined',
+    url: 'assets/videos/video.webm',
+    success: function(data){
+
+      // Normalize the data
+      data = data.split('').map(function(e){
+        return e.charCodeAt(0) & 0xff;
+      });
+
+      // Create new instance of webm player with canvas object
+      var player = new webm(canvas);
+
+      // Run player with video data
+      player.run(data);
+    }
+  });
+
+});</pre>
+
+</div>
+
+<script src="../webm.js"></script>
+<script src="assets/js/jquery-1.9.1.min.js"></script>
+<script src="assets/js/example.js"></script>
+
+</body>
+</html>
