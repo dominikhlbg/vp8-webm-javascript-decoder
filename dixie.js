@@ -5143,10 +5143,10 @@ filter_row_normal(ctx,
                 filter_subblock_v_edge(y, y_off + 12, stride, edge_limit,
                                        interior_limit, hev_threshold,
                                        2);
-                filter_subblock_v_edge(u, y_off + 4, uv_stride, edge_limit,
+                filter_subblock_v_edge(u, u_off + 4, uv_stride, edge_limit,
                                        interior_limit, hev_threshold,
                                        1);
-                filter_subblock_v_edge(v, y_off + 4, uv_stride, edge_limit,
+                filter_subblock_v_edge(v, v_off + 4, uv_stride, edge_limit,
                                        interior_limit, hev_threshold,
                                        1);
             }
