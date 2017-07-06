@@ -7185,16 +7185,16 @@ decode_frame(ctx,
                                      ctx.mb_cols);
         vp8_dixie_predict_process_row(ctx, row, 0, ctx.mb_cols);
 
-//        if (ctx.loopfilter_hdr.level && row)
-//            vp8_dixie_loopfilter_process_row(ctx, row - 1, 0,
-//                                             ctx.mb_cols);
+        if (ctx.loopfilter_hdr.level && row)
+            vp8_dixie_loopfilter_process_row(ctx, row - 1, 0,
+                                             ctx.mb_cols);
 
         if (++partition == ctx.token_hdr.partitions)
             partition = 0;
     }
 
-//    if (ctx.loopfilter_hdr.level)
-//        vp8_dixie_loopfilter_process_row(ctx, row - 1, 0, ctx.mb_cols);
+    if (ctx.loopfilter_hdr.level)
+        vp8_dixie_loopfilter_process_row(ctx, row - 1, 0, ctx.mb_cols);
 
     ctx.frame_cnt++;
 
